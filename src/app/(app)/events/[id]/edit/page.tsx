@@ -79,7 +79,7 @@ export default function EditEventPage() {
     return (
       <div>
         <p className="text-red-600">{error}</p>
-        <Link href="/events" className="text-blue-600 hover:underline mt-2 inline-block">
+        <Link href="/events" className="text-[var(--brand-primary)] hover:underline mt-2 inline-block">
           Voltar
         </Link>
       </div>
@@ -184,7 +184,7 @@ export default function EditEventPage() {
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 bg-[var(--brand-primary)] text-white rounded hover:bg-[var(--brand-primary-hover)] disabled:opacity-50"
           >
             {saving ? "Salvando…" : "Salvar"}
           </button>

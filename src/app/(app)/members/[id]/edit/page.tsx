@@ -20,13 +20,15 @@ export default function EditMemberPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [profileRole, setProfileRole] = useState<"user" | "admin">("user");
 
   useEffect(() => {
     async function load() {
       const supabase = createClient();
       const { data, error: err } = await supabase
         .from("members")
-        .select("name, email, matricula_senib, birth_date, sex, active")
+        .select("name, email, matricula_senib, birth_date, sex, active, user_id")
         .eq("id", id)
         .single();
       if (err || !data) {
@@ -40,6 +42,15 @@ export default function EditMemberPage() {
       setBirthDate(data.birth_date ? String(data.birth_date).slice(0, 10) : "");
       setSex(data.sex ?? "");
       setActive(data.active ?? true);
+      setUserId(data.user_id ?? null);
+      if (data.user_id) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user_id)
+          .single();
+        setProfileRole((profile?.role === "admin" ? "admin" : "user"));
+      }
       setLoading(false);
     }
     load();
@@ -61,11 +72,23 @@ export default function EditMemberPage() {
         active,
       })
       .eq("id", id);
-    setSaving(false);
     if (err) {
+      setSaving(false);
       toast.error(err.message);
       return;
     }
+    if (userId) {
+      const { error: roleErr } = await supabase
+        .from("profiles")
+        .update({ role: profileRole })
+        .eq("id", userId);
+      if (roleErr) {
+        setSaving(false);
+        toast.error(roleErr.message);
+        return;
+      }
+    }
+    setSaving(false);
     toast.success("Membro atualizado.");
     router.push("/members");
     router.refresh();
@@ -76,7 +99,7 @@ export default function EditMemberPage() {
     return (
       <div>
         <p className="text-red-600">{error}</p>
-        <Link href="/members" className="text-blue-600 hover:underline mt-2 inline-block">
+        <Link href="/members" className="text-[var(--brand-primary)] hover:underline mt-2 inline-block">
           Voltar
         </Link>
       </div>
@@ -164,11 +187,30 @@ export default function EditMemberPage() {
             Ativo
           </label>
         </div>
+        {userId && (
+          <div>
+            <label htmlFor="profileRole" className="block text-sm font-medium mb-1">
+              Função no sistema
+            </label>
+            <select
+              id="profileRole"
+              value={profileRole}
+              onChange={(e) => setProfileRole(e.target.value as "user" | "admin")}
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+            >
+              <option value="user">Usuário</option>
+              <option value="admin">Administrador</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Este membro tem conta vinculada. A função define o que ele pode acessar no app.
+            </p>
+          </div>
+        )}
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={saving}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 bg-[var(--brand-primary)] text-white rounded hover:bg-[var(--brand-primary-hover)] disabled:opacity-50"
           >
             {saving ? "Salvando…" : "Salvar"}
           </button>

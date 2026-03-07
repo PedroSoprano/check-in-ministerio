@@ -1,0 +1,26 @@
+{
+  "name": "Check-in Ministério de Fantoches",
+  "short_name": "Check-in Ministério",
+  "description": "Check-in e programação do Ministério de Fantoches - NIBTB",
+  "start_url": "https://check-in-ministerio.vercel.app/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#1a365d",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/images/logo-nova-igreja-batista-tabernaculo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo-nova-igreja-batista-tabernaculo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

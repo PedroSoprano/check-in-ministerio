@@ -15,7 +15,7 @@ export default async function MembersPage() {
         <h1 className="text-xl font-bold">Membros</h1>
         <Link
           href="/members/new"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+          className="px-4 py-2 bg-[var(--brand-primary)] text-white rounded hover:bg-[var(--brand-primary-hover)] text-sm"
         >
           Novo membro
         </Link>

@@ -46,7 +46,7 @@ export default function EventsList({ events }: { events: EventRow[] }) {
           <div className="flex items-center gap-2">
             <Link
               href={`/events/${ev.id}/edit`}
-              className="p-2 rounded text-blue-600 hover:bg-blue-50"
+              className="p-2 rounded text-[var(--brand-primary)] hover:bg-[var(--brand-muted)]"
               title="Editar"
             >
               <IconEdit />

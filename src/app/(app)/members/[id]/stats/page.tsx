@@ -60,7 +60,7 @@ export default async function MemberStatsPage({
   return (
     <div>
       <div className="mb-6 flex items-center gap-4">
-        <Link href="/members" className="text-sm text-blue-600 hover:underline">
+        <Link href="/members" className="text-sm text-[var(--brand-primary)] hover:underline">
           ← Membros
         </Link>
       </div>

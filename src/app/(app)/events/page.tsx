@@ -15,7 +15,7 @@ export default async function EventsPage() {
         <h1 className="text-xl font-bold">Eventos</h1>
         <Link
           href="/events/new"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+          className="px-4 py-2 bg-[var(--brand-primary)] text-white rounded hover:bg-[var(--brand-primary-hover)] text-sm"
         >
           Novo evento
         </Link>

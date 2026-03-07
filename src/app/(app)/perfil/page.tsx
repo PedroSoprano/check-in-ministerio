@@ -23,6 +23,10 @@ export default function PerfilPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -87,6 +91,30 @@ export default function PerfilPage() {
     setSaving(false);
     toast.success("Perfil atualizado com sucesso.");
     router.refresh();
+  }
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    setPasswordMessage(null);
+    if (newPassword.length < 6) {
+      setPasswordMessage({ type: "error", text: "A nova senha deve ter no mínimo 6 caracteres." });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage({ type: "error", text: "As senhas não coincidem." });
+      return;
+    }
+    setChangingPassword(true);
+    const supabase = createClient();
+    const { error: err } = await supabase.auth.updateUser({ password: newPassword });
+    setChangingPassword(false);
+    if (err) {
+      setPasswordMessage({ type: "error", text: err.message });
+      return;
+    }
+    setPasswordMessage({ type: "success", text: "Senha alterada com sucesso." });
+    setNewPassword("");
+    setConfirmPassword("");
   }
 
   if (loading) {
@@ -212,6 +240,59 @@ export default function PerfilPage() {
           {saving ? "Salvando…" : "Salvar alterações"}
         </button>
       </form>
+
+      <section className="pt-6 border-t border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">Alterar senha</h2>
+        <p className="text-gray-600 text-sm mb-4">
+          Digite a nova senha (mínimo 6 caracteres). Você permanecerá logado.
+        </p>
+        <form onSubmit={handleChangePassword} className="space-y-4">
+          <div>
+            <label htmlFor="new_password" className={labelClass}>
+              Nova senha
+            </label>
+            <input
+              id="new_password"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className={inputClass}
+              placeholder="Mínimo 6 caracteres"
+              minLength={6}
+              autoComplete="new-password"
+            />
+          </div>
+          <div>
+            <label htmlFor="confirm_password" className={labelClass}>
+              Confirmar nova senha
+            </label>
+            <input
+              id="confirm_password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={inputClass}
+              placeholder="Repita a senha"
+              minLength={6}
+              autoComplete="new-password"
+            />
+          </div>
+          {passwordMessage && (
+            <p
+              className={`text-sm ${passwordMessage.type === "error" ? "text-red-600" : "text-green-600"}`}
+            >
+              {passwordMessage.text}
+            </p>
+          )}
+          <button
+            type="submit"
+            disabled={changingPassword || !newPassword || !confirmPassword}
+            className="px-4 py-2 rounded-lg bg-gray-700 text-white text-sm font-medium hover:bg-gray-800 disabled:opacity-50"
+          >
+            {changingPassword ? "Alterando…" : "Alterar senha"}
+          </button>
+        </form>
+      </section>
     </div>
   );
 }
