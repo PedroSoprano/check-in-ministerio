@@ -13,6 +13,7 @@ export default function NewMemberPage() {
   const [matriculaSenib, setMatriculaSenib] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [sex, setSex] = useState("");
+  const [roleWhenLinked, setRoleWhenLinked] = useState<"user" | "admin">("user");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -25,6 +26,7 @@ export default function NewMemberPage() {
       matricula_senib: matriculaSenib.trim() || null,
       birth_date: birthDate.trim() || null,
       sex: sex || null,
+      role_when_linked: roleWhenLinked,
       active: true,
     });
     setLoading(false);
@@ -105,6 +107,23 @@ export default function NewMemberPage() {
             <option value="M">Masculino</option>
             <option value="F">Feminino</option>
           </select>
+        </div>
+        <div>
+          <label htmlFor="roleWhenLinked" className="block text-sm font-medium mb-1">
+            Função no sistema (quando tiver conta vinculada)
+          </label>
+          <select
+            id="roleWhenLinked"
+            value={roleWhenLinked}
+            onChange={(e) => setRoleWhenLinked(e.target.value as "user" | "admin")}
+            className="w-full px-3 py-2 border border-gray-300 rounded"
+          >
+            <option value="user">Usuário</option>
+            <option value="admin">Administrador</option>
+          </select>
+          <p className="text-xs text-gray-500 mt-1">
+            Quando o membro fizer login com o e-mail cadastrado, receberá esta função no app.
+          </p>
         </div>
         <div className="flex gap-2">
           <button
