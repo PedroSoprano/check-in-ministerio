@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tema claro fixo */
+:root {
+  --foreground: #1f2937;
+  --background: #ffffff;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* Garantir contraste em inputs e cards */
+input, select, textarea, button {
+  color: #1f2937;
+}
+select option {
+  background: #fff;
+  color: #1f2937;
+}
+
+/* Safe area para celulares com notch / barra de gestos */
+.safe-area-padding {
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Evitar zoom em inputs no iOS (font-size >= 16px) */
+@media (max-width: 640px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"] {
+    font-size: 16px;
+  }
+}

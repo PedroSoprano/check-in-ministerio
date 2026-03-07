@@ -1,0 +1,127 @@
+"use client";
+
+import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
+
+function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") ?? "/me";
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (signInError) {
+        setError(signInError.message);
+        setLoading(false);
+        return;
+      }
+      await fetch("/api/ensure-profile", { method: "POST", credentials: "include" });
+      await supabase.rpc("link_member_by_auth_email");
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push(redirect);
+        router.refresh();
+        return;
+      }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      const role = profile?.role ?? "user";
+      if (role === "admin") {
+        router.push("/dashboard");
+      } else {
+        router.push(redirect === "/dashboard" ? "/me" : redirect);
+      }
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao entrar. Tente de novo.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="min-h-screen flex items-center justify-center p-4 safe-area-padding">
+      <div className="w-full max-w-sm space-y-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-center">Entrar</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium mb-1">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-base"
+              placeholder="seu@email.com"
+            />
+          </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium mb-1">
+              Senha
+            </label>
+            <input
+              id="password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-base"
+            />
+          </div>
+          {error && (
+            <p className="text-sm text-red-600">{error}</p>
+          )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full min-h-[48px] py-3 px-4 bg-blue-600 text-white rounded-lg text-base font-medium hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 touch-manipulation"
+          >
+            {loading ? "Entrando…" : "Entrar"}
+          </button>
+        </form>
+        <p className="text-center text-sm text-gray-600">
+          Não tem conta?{" "}
+          <Link href="/signup" className="text-blue-600 hover:underline min-h-[44px] inline-flex items-center">
+            Cadastre-se
+          </Link>
+        </p>
+        <p className="text-center text-sm">
+          <Link href="/" className="text-gray-500 hover:underline min-h-[44px] inline-flex items-center justify-center">
+            Voltar ao início
+          </Link>
+        </p>
+      </div>
+    </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen flex items-center justify-center"><p className="text-gray-500">Carregando…</p></main>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
