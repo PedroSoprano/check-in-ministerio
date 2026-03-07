@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Loading } from "@/components/Loading";
 import { useCallback, useEffect, useState } from "react";
 
 type EventItem = {
@@ -186,7 +187,7 @@ export default function CalendarioPage() {
       </div>
 
       {loading ? (
-        <p className="text-gray-500">Carregando…</p>
+        <Loading />
       ) : viewMode === "lista" ? (
         <ul className="space-y-2 border border-gray-200 rounded-lg overflow-hidden">
           {events.length === 0 ? (

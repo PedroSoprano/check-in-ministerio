@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,12 +13,10 @@ export default function NewMemberPage() {
   const [matriculaSenib, setMatriculaSenib] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [sex, setSex] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
     const supabase = createClient();
     const { error: err } = await supabase.from("members").insert({
@@ -30,9 +29,10 @@ export default function NewMemberPage() {
     });
     setLoading(false);
     if (err) {
-      setError(err.message);
+      toast.error(err.message);
       return;
     }
+    toast.success("Membro cadastrado.");
     router.push("/members");
     router.refresh();
   }
@@ -106,7 +106,6 @@ export default function NewMemberPage() {
             <option value="F">Feminino</option>
           </select>
         </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
         <div className="flex gap-2">
           <button
             type="submit"

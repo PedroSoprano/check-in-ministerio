@@ -2,6 +2,7 @@
 
 import { Logo } from "@/components/Logo";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,12 +12,10 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
     const supabase = createClient();
     const { error: signUpError } = await supabase.auth.signUp({
@@ -27,13 +26,14 @@ export default function SignupPage() {
       },
     });
     if (signUpError) {
-      setError(signUpError.message);
+      toast.error(signUpError.message);
       setLoading(false);
       return;
     }
     await fetch("/api/ensure-profile", { method: "POST", credentials: "include" });
     await supabase.rpc("link_member_by_auth_email");
     setLoading(false);
+    toast.success("Conta criada. Verifique seu e-mail se configurado confirmação.");
     router.push("/me");
     router.refresh();
   }
@@ -92,9 +92,6 @@ export default function SignupPage() {
               placeholder="Mínimo 6 caracteres"
             />
           </div>
-          {error && (
-            <p className="text-sm text-red-600">{error}</p>
-          )}
           <button
             type="submit"
             disabled={loading}

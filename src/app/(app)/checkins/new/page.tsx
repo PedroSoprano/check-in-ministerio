@@ -1,6 +1,8 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "react-toastify";
+import { Loading } from "@/components/Loading";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -68,10 +70,9 @@ export default function NewCheckinPage() {
     if (!memberId) return;
     const eventId = selectedEventId || (events.length === 1 ? events[0].id : null);
     if (!eventId) {
-      setError("Selecione o evento.");
+      toast.error("Selecione o evento.");
       return;
     }
-    setError(null);
     setSaving(true);
     const supabase = createClient();
     const { error: err } = await supabase.from("check_ins").insert({
@@ -83,7 +84,7 @@ export default function NewCheckinPage() {
     setSaving(false);
     if (err) {
       const isDuplicate = err.code === "23505";
-      setError(
+      toast.error(
         isDuplicate
           ? "Este membro já possui check-in para este evento."
           : err.message
@@ -94,7 +95,7 @@ export default function NewCheckinPage() {
     router.refresh();
   }
 
-  if (loading) return <p className="text-gray-500">Carregando…</p>;
+  if (loading) return <Loading />;
   if (!memberId || error === "Membro não informado.") {
     return (
       <div>
@@ -179,7 +180,6 @@ export default function NewCheckinPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-[var(--brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)]"
             />
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex gap-2">
             <button
               type="submit"

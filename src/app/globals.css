@@ -69,3 +69,19 @@ select option {
     display: none !important;
   }
 }
+
+/* Toast (react-toastify) – paleta do projeto */
+.Toastify__toast--success {
+  --toastify-color-success: var(--brand-primary);
+  --toastify-icon-color-success: var(--brand-primary);
+}
+.Toastify__progress-bar--success {
+  background: var(--brand-primary);
+}
+.Toastify__toast {
+  font-size: 0.9375rem;
+}
+.Toastify__toast-container {
+  width: calc(100% - 2rem);
+  max-width: 420px;
+}

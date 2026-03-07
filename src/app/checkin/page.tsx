@@ -1,6 +1,8 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "react-toastify";
+import { Loading } from "@/components/Loading";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -29,7 +31,6 @@ export default function CheckinPage() {
   const [versesMemorized, setVersesMemorized] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState<{ type: "ok" | "error"; text: string } | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [alreadyCheckedIn, setAlreadyCheckedIn] = useState(false);
 
@@ -105,11 +106,10 @@ export default function CheckinPage() {
     e.preventDefault();
     if (!selectedMemberId) return;
     if (eventsToday.length > 0 && !selectedEventId) {
-      setMessage({ type: "error", text: "Selecione o evento." });
+      toast.error("Selecione o evento.");
       return;
     }
     if (alreadyCheckedIn) return;
-    setMessage(null);
     setSubmitting(true);
     const location = await getLocation();
     const supabase = createClient();
@@ -127,15 +127,14 @@ export default function CheckinPage() {
     setSubmitting(false);
     if (error) {
       const isDuplicate = error.code === "23505";
-      setMessage({
-        type: "error",
-        text: isDuplicate
+      toast.error(
+        isDuplicate
           ? "Este membro já fez check-in para este evento (ou hoje)."
-          : error.message,
-      });
+          : error.message
+      );
       return;
     }
-    setMessage({ type: "ok", text: "Presença registrada com sucesso!" });
+    toast.success("Presença registrada com sucesso!");
     setSelectedMemberId("");
     setMemberInput("");
     setMeditationDone(false);
@@ -179,11 +178,7 @@ export default function CheckinPage() {
   }, [memberDropdownOpen, highlightedIndex]);
 
   if (loading) {
-    return (
-      <main className="min-h-screen p-6 flex items-center justify-center bg-white">
-        <p className="text-gray-600">Carregando…</p>
-      </main>
-    );
+    return <Loading fullPage />;
   }
 
   return (
@@ -338,18 +333,6 @@ export default function CheckinPage() {
           <div className="p-3 bg-amber-50 text-amber-800 rounded border border-amber-200 text-sm">
             Este membro já fez check-in para este evento. Escolha outra pessoa ou outro evento.
           </div>
-        )}
-
-        {message && (
-          <p
-            className={
-              message.type === "ok"
-                ? "text-sm text-green-600"
-                : "text-sm text-red-600"
-            }
-          >
-            {message.text}
-          </p>
         )}
 
         <button

@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -14,12 +15,10 @@ export default function NewEventPage() {
   const [type, setType] = useState<"ensaio" | "evento">("ensaio");
   const [description, setDescription] = useState("");
   const [recurrenceRule, setRecurrenceRule] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
     const supabase = createClient();
     const { error: err } = await supabase.from("events").insert({
@@ -33,9 +32,10 @@ export default function NewEventPage() {
     });
     setLoading(false);
     if (err) {
-      setError(err.message);
+      toast.error(err.message);
       return;
     }
+    toast.success("Evento criado.");
     router.push("/events");
     router.refresh();
   }
@@ -135,7 +135,6 @@ export default function NewEventPage() {
             className="w-full px-3 py-2 border border-gray-300 rounded"
           />
         </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
         <div className="flex gap-2">
           <button
             type="submit"

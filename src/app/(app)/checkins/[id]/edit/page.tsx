@@ -1,6 +1,8 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "react-toastify";
+import { Loading } from "@/components/Loading";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -64,14 +66,15 @@ export default function EditCheckinPage() {
       .eq("id", id);
     setSaving(false);
     if (err) {
-      setError(err.message);
+      toast.error(err.message);
       return;
     }
+    toast.success("Check-in atualizado.");
     router.back();
     router.refresh();
   }
 
-  if (loading) return <p className="text-gray-500">Carregando…</p>;
+  if (loading) return <Loading />;
   if (error) {
     return (
       <div>
@@ -126,7 +129,6 @@ export default function EditCheckinPage() {
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-[var(--brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)]"
           />
         </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
         <div className="flex gap-2">
           <button
             type="submit"

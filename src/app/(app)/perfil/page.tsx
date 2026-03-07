@@ -3,7 +3,9 @@
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { IconUser } from "@/components/Icons";
+import { Loading } from "@/components/Loading";
 
 const inputClass =
   "w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-[var(--brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)]";
@@ -21,7 +23,6 @@ export default function PerfilPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -65,7 +66,6 @@ export default function PerfilPage() {
     e.preventDefault();
     if (!memberId) return;
     setError(null);
-    setMessage(null);
     setSaving(true);
     const supabase = createClient();
     const { error: err } = await supabase
@@ -80,19 +80,23 @@ export default function PerfilPage() {
       .eq("id", memberId);
     setSaving(false);
     if (err) {
-      setError(err.message);
+      toast.error(err.message);
+      setSaving(false);
       return;
     }
-    setMessage("Perfil atualizado com sucesso.");
+    setSaving(false);
+    toast.success("Perfil atualizado com sucesso.");
     router.refresh();
   }
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2">
-        <IconUser title="Perfil" />
-        <h1 className="text-xl font-bold text-gray-900">Meu perfil</h1>
-        <p className="text-gray-500 mt-4">Carregando…</p>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <IconUser title="Perfil" />
+          <h1 className="text-xl font-bold text-gray-900">Meu perfil</h1>
+        </div>
+        <Loading />
       </div>
     );
   }
@@ -200,8 +204,6 @@ export default function PerfilPage() {
             </span>
           </div>
         )}
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        {message && <p className="text-sm text-green-600">{message}</p>}
         <button
           type="submit"
           disabled={saving}

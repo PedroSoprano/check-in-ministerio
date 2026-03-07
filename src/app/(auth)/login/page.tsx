@@ -1,7 +1,9 @@
 "use client";
 
 import { Logo } from "@/components/Logo";
+import { Loading } from "@/components/Loading";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
@@ -12,12 +14,10 @@ function LoginForm() {
   const redirect = searchParams.get("redirect") ?? "/me";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError(null);
     setLoading(true);
     try {
       const supabase = createClient();
@@ -26,7 +26,7 @@ function LoginForm() {
         password,
       });
       if (signInError) {
-        setError(signInError.message);
+        toast.error(signInError.message);
         setLoading(false);
         return;
       }
@@ -51,7 +51,7 @@ function LoginForm() {
       }
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro ao entrar. Tente de novo.");
+      toast.error(err instanceof Error ? err.message : "Erro ao entrar. Tente de novo.");
     } finally {
       setLoading(false);
     }
@@ -95,9 +95,6 @@ function LoginForm() {
               className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] text-base"
             />
           </div>
-          {error && (
-            <p className="text-sm text-red-600">{error}</p>
-          )}
           <button
             type="submit"
             disabled={loading}
@@ -124,7 +121,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<main className="min-h-screen flex items-center justify-center"><p className="text-gray-500">Carregando…</p></main>}>
+    <Suspense fallback={<Loading fullPage />}>
       <LoginForm />
     </Suspense>
   );

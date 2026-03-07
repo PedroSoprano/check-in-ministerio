@@ -7,12 +7,13 @@ import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { toast } from "react-toastify";
 import { IconCalendar, IconDownload, IconClose } from "@/components/Icons";
 
 import "leaflet/dist/leaflet.css";
 
 const CheckinMap = dynamic(
-  () => import("@/components/CheckinMap").then((m) => ({ default: m.CheckinMap })),
+  () => import("@/components/CheckinMap"),
   { ssr: false }
 );
 
@@ -72,17 +73,16 @@ export function PresencaHojeClient({
   const [statusFilter, setStatusFilter] = useState<"todos" | "presentes" | "ausentes">("todos");
 
   const [selectedPresent, setSelectedPresent] = useState<PresentItem | null>(null);
+  const [presentModalKey, setPresentModalKey] = useState(0);
   const [editMeditation, setEditMeditation] = useState(false);
   const [editVerses, setEditVerses] = useState(0);
   const [editSaving, setEditSaving] = useState(false);
-  const [editError, setEditError] = useState<string | null>(null);
 
   const [selectedAbsent, setSelectedAbsent] = useState<AbsentItem | null>(null);
   const [createEventId, setCreateEventId] = useState("");
   const [createMeditation, setCreateMeditation] = useState(false);
   const [createVerses, setCreateVerses] = useState(0);
   const [createSaving, setCreateSaving] = useState(false);
-  const [createError, setCreateError] = useState<string | null>(null);
 
   const eventsToPick = eventIdForNew ? [{ id: eventIdForNew, title: "", event_date: eventDate, event_time: null }] : eventsForDay;
   const effectiveCreateEventId = eventIdForNew || createEventId || (eventsToPick.length === 1 ? eventsToPick[0].id : "");
@@ -142,16 +142,15 @@ export function PresencaHojeClient({
   };
 
   function openEditModal(c: PresentItem) {
+    setPresentModalKey((k) => k + 1);
     setSelectedPresent(c);
     setEditMeditation(c.meditation_done);
     setEditVerses(c.verses_memorized);
-    setEditError(null);
   }
 
   async function handleSaveEdit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedPresent) return;
-    setEditError(null);
     setEditSaving(true);
     const supabase = createClient();
     const { error } = await supabase
@@ -160,9 +159,10 @@ export function PresencaHojeClient({
       .eq("id", selectedPresent.id);
     setEditSaving(false);
     if (error) {
-      setEditError(error.message);
+      toast.error(error.message);
       return;
     }
+    toast.success("Check-in atualizado.");
     setSelectedPresent(null);
     router.refresh();
   }
@@ -172,7 +172,6 @@ export function PresencaHojeClient({
     setCreateEventId(eventsToPick.length === 1 ? eventsToPick[0].id : eventsToPick[0]?.id ?? "");
     setCreateMeditation(false);
     setCreateVerses(0);
-    setCreateError(null);
   }
 
   async function handleCreateCheckin(e: React.FormEvent) {
@@ -180,10 +179,9 @@ export function PresencaHojeClient({
     if (!selectedAbsent) return;
     const eventId = eventIdForNew || createEventId;
     if (!eventId) {
-      setCreateError("Selecione o evento.");
+      toast.error("Selecione o evento.");
       return;
     }
-    setCreateError(null);
     setCreateSaving(true);
     const supabase = createClient();
     const { error } = await supabase.from("check_ins").insert({
@@ -194,9 +192,10 @@ export function PresencaHojeClient({
     });
     setCreateSaving(false);
     if (error) {
-      setCreateError(error.code === "23505" ? "Este membro já possui check-in para este evento." : error.message);
+      toast.error(error.code === "23505" ? "Este membro já possui check-in para este evento." : error.message);
       return;
     }
+    toast.success("Check-in criado.");
     setSelectedAbsent(null);
     router.refresh();
   }
@@ -393,7 +392,7 @@ export function PresencaHojeClient({
       {selectedPresent && (
         <>
           <div
-            className="fixed inset-0 z-40 bg-black/50"
+            className="fixed inset-0 z-40 bg-gray-900/45 backdrop-blur-[2px]"
             aria-hidden
             onClick={() => setSelectedPresent(null)}
           />
@@ -423,9 +422,57 @@ export function PresencaHojeClient({
                     {selectedPresent.events?.event_time && ` · ${String(selectedPresent.events.event_time).slice(0, 5)}`}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-3 text-sm">
-                  <span>Meditação: {selectedPresent.meditation_done ? "Sim" : "Não"}</span>
-                  <span>Versículos: {selectedPresent.verses_memorized}</span>
+                <div
+                  className="flex flex-wrap items-center gap-3"
+                  aria-label="Meditação e versículos"
+                >
+                  <span
+                    className={`flex items-center gap-1.5 ${!selectedPresent.meditation_done ? "text-red-600" : ""}`}
+                    title="Meditação"
+                  >
+                    <span
+                      className={`inline-block w-4 h-4 rounded-full border-2 shrink-0 ${
+                        selectedPresent.meditation_done
+                          ? "bg-teal-500 border-teal-600"
+                          : "bg-transparent border-red-400"
+                      }`}
+                      aria-hidden
+                    />
+                    <span
+                      className={`text-sm ${selectedPresent.meditation_done ? "text-gray-600" : "text-red-600"}`}
+                    >
+                      Meditação
+                    </span>
+                  </span>
+                  <span
+                    className="flex items-center gap-1.5"
+                    title={
+                      selectedPresent.verses_memorized === 1
+                        ? "1 versículo"
+                        : `${selectedPresent.verses_memorized} versículos`
+                    }
+                  >
+                    <span className="flex gap-0.5" aria-hidden>
+                      {Array.from({
+                        length: Math.min(selectedPresent.verses_memorized, 10),
+                      }).map((_, i) => (
+                        <span
+                          key={i}
+                          className="inline-block w-3 h-3 rounded-full bg-[var(--brand-primary)] shrink-0"
+                        />
+                      ))}
+                      {selectedPresent.verses_memorized > 10 && (
+                        <span className="text-xs text-gray-600 ml-0.5">
+                          +{selectedPresent.verses_memorized - 10}
+                        </span>
+                      )}
+                    </span>
+                    <span className="text-sm text-gray-600">
+                      {selectedPresent.verses_memorized === 1
+                        ? "1 versículo"
+                        : `${selectedPresent.verses_memorized} versículos`}
+                    </span>
+                  </span>
                 </div>
                 <div className="text-sm">
                   <span className="text-gray-500">Localização: </span>
@@ -437,6 +484,7 @@ export function PresencaHojeClient({
                 </div>
                 {selectedPresent.latitude != null && selectedPresent.longitude != null && (
                   <CheckinMap
+                    key={`${selectedPresent.id}-${presentModalKey}`}
                     latitude={Number(selectedPresent.latitude)}
                     longitude={Number(selectedPresent.longitude)}
                     className="h-52 w-full rounded-lg z-0"
@@ -465,7 +513,6 @@ export function PresencaHojeClient({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                     />
                   </div>
-                  {editError && <p className="text-sm text-red-600">{editError}</p>}
                   <div className="flex gap-2">
                     <button
                       type="submit"
@@ -493,7 +540,7 @@ export function PresencaHojeClient({
       {selectedAbsent && hasEvents && (
         <>
           <div
-            className="fixed inset-0 z-40 bg-black/50"
+            className="fixed inset-0 z-40 bg-gray-900/45 backdrop-blur-[2px]"
             aria-hidden
             onClick={() => setSelectedAbsent(null)}
           />
@@ -556,7 +603,6 @@ export function PresencaHojeClient({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                     />
                   </div>
-                  {createError && <p className="text-sm text-red-600">{createError}</p>}
                   <div className="flex gap-2">
                     <button
                       type="submit"
