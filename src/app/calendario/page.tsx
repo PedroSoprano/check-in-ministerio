@@ -136,7 +136,7 @@ export default function CalendarioPage() {
   }
 
   return (
-    <main className="min-h-screen p-4 sm:p-6 max-w-4xl mx-auto safe-area-padding">
+    <main className="min-h-screen px-5 pt-5 pb-6 sm:p-6 max-w-4xl mx-auto safe-area-padding">
       <div className="mb-4 sm:mb-6 flex items-center justify-between gap-2">
         <h1 className="text-lg sm:text-xl font-bold">Programação</h1>
         <Link href="/" className="min-h-[44px] flex items-center text-sm text-blue-600 hover:underline active:text-blue-800 py-2">

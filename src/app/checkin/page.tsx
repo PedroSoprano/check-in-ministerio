@@ -170,7 +170,7 @@ export default function CheckinPage() {
   }
 
   return (
-    <main className="min-h-screen p-4 sm:p-6 max-w-lg mx-auto bg-white text-gray-800 safe-area-padding">
+    <main className="min-h-screen px-5 pt-5 pb-6 sm:p-6 max-w-lg mx-auto bg-white text-gray-800 safe-area-padding">
       <div className="mb-4 sm:mb-6 flex items-center justify-between gap-2">
         <h1 className="text-lg sm:text-xl font-bold text-gray-900">Check-in</h1>
         <Link href="/" className="min-h-[44px] flex items-center text-sm text-blue-600 hover:underline active:text-blue-800 py-2">

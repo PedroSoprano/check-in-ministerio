@@ -57,7 +57,7 @@ function LoginForm() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 safe-area-padding">
+    <main className="min-h-screen flex items-center justify-center px-5 pt-5 pb-6 safe-area-padding">
       <div className="w-full max-w-sm space-y-6">
         <h1 className="text-xl sm:text-2xl font-bold text-center">Entrar</h1>
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -18,7 +18,7 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 gap-6 bg-white text-gray-800 safe-area-padding">
+    <main className="min-h-screen flex flex-col items-center justify-center px-5 pt-5 pb-6 sm:px-8 sm:pt-8 sm:pb-8 gap-6 bg-white text-gray-800 safe-area-padding">
       <h1 className="text-xl sm:text-2xl font-bold text-gray-900 text-center px-2">
         Check-in Ministério de Fantoches
       </h1>

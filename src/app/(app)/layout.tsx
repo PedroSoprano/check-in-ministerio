@@ -24,7 +24,7 @@ export default async function AppLayout({
 
   return (
     <div className="min-h-screen flex flex-col safe-area-padding">
-      <header className="border-b border-gray-200 bg-white px-3 sm:px-4 py-2 sm:py-3 shrink-0">
+      <header className="border-b border-gray-200 bg-white shrink-0 safe-area-padding py-3">
         <nav className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <Link
             href={isAdmin ? "/dashboard" : "/me"}
@@ -60,7 +60,7 @@ export default async function AppLayout({
           </div>
         </nav>
       </header>
-      <main className="flex-1 p-4 sm:p-6 max-w-4xl mx-auto w-full overflow-x-hidden">{children}</main>
+      <main className="flex-1 px-5 pt-4 pb-6 sm:p-6 max-w-4xl mx-auto w-full overflow-x-hidden safe-area-padding">{children}</main>
     </div>
   );
 }

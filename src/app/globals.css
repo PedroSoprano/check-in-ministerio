@@ -22,12 +22,12 @@ select option {
   color: #1f2937;
 }
 
-/* Safe area para celulares com notch / barra de gestos */
+/* Padding lateral e superior: mínimo 16px + safe area (notch/gestos) */
 .safe-area-padding {
-  padding-left: env(safe-area-inset-left, 0);
-  padding-right: env(safe-area-inset-right, 0);
-  padding-top: env(safe-area-inset-top, 0);
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  padding-left: max(env(safe-area-inset-left, 0), 1rem);
+  padding-right: max(env(safe-area-inset-right, 0), 1rem);
+  padding-top: max(env(safe-area-inset-top, 0), 1rem);
+  padding-bottom: max(env(safe-area-inset-bottom, 0), 1rem);
 }
 
 /* Evitar zoom em inputs no iOS (font-size >= 16px) */
