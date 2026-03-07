@@ -28,6 +28,8 @@ export default async function PresencaHojePage() {
     event_id: string;
     meditation_done: boolean;
     verses_memorized: number;
+    latitude: number | null;
+    longitude: number | null;
     members: { name: string } | null;
     events: { title: string; event_time: string | null } | null;
   }> = [];
@@ -36,7 +38,7 @@ export default async function PresencaHojePage() {
     const { data } = await supabase
       .from("check_ins")
       .select(
-        "id, member_id, event_id, meditation_done, verses_memorized, members(name), events(title, event_time)"
+        "id, member_id, event_id, meditation_done, verses_memorized, latitude, longitude, members(name), events(title, event_time)"
       )
       .in("event_id", eventIds);
     checkInsToday = (data ?? []) as unknown as typeof checkInsToday;
@@ -58,6 +60,7 @@ export default async function PresencaHojePage() {
       dateFormatted={dateFormatted}
       eventDate={eventDate}
       hasEvents={hasEvents}
+      eventsForDay={eventsToday ?? []}
     />
   );
 }

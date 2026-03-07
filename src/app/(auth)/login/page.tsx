@@ -45,7 +45,7 @@ function LoginForm() {
         .single();
       const role = profile?.role ?? "user";
       if (role === "admin") {
-        router.push("/dashboard");
+        router.push("/hoje");
       } else {
         router.push(redirect === "/dashboard" ? "/me" : redirect);
       }

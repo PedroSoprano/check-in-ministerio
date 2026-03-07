@@ -3,7 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { IconLogout, IconCalendar, IconMenu, IconClose } from "@/components/Icons";
+import {
+  IconLogout,
+  IconCalendar,
+  IconMenu,
+  IconClose,
+  IconTable,
+  IconLayoutDashboard,
+  IconUsers,
+  IconUser,
+  IconCalendarDays,
+  IconClipboardCheck,
+} from "@/components/Icons";
 
 type Props = { isAdmin: boolean };
 
@@ -73,10 +84,19 @@ export function AppHeader({ isAdmin }: Props) {
                     Presença hoje
                   </Link>
                   <Link
+                    href="/presenca"
+                    className={linkClass}
+                    onClick={() => setOpen(false)}
+                  >
+                    <IconTable title="Tabela de presença" />
+                    Tabela de presença
+                  </Link>
+                  <Link
                     href="/dashboard"
                     className={linkClass}
                     onClick={() => setOpen(false)}
                   >
+                    <IconLayoutDashboard title="Dashboard" />
                     Dashboard
                   </Link>
                   <Link
@@ -84,6 +104,7 @@ export function AppHeader({ isAdmin }: Props) {
                     className={linkClass}
                     onClick={() => setOpen(false)}
                   >
+                    <IconUsers title="Membros" />
                     Membros
                   </Link>
                   <Link
@@ -91,15 +112,25 @@ export function AppHeader({ isAdmin }: Props) {
                     className={linkClass}
                     onClick={() => setOpen(false)}
                   >
+                    <IconCalendarDays title="Eventos" />
                     Eventos
                   </Link>
                 </>
               )}
               <Link
+                href="/perfil"
+                className={linkClass}
+                onClick={() => setOpen(false)}
+              >
+                <IconUser title="Meu perfil" />
+                Meu perfil
+              </Link>
+              <Link
                 href="/me"
                 className={linkClass}
                 onClick={() => setOpen(false)}
               >
+                <IconClipboardCheck title="Meus check-ins" />
                 Meus check-ins
               </Link>
               <form action="/api/auth/signout" method="post" className="pt-2">
