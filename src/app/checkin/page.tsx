@@ -1,5 +1,6 @@
 "use client";
 
+import confetti from "canvas-confetti";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "react-toastify";
 import { Loading } from "@/components/Loading";
@@ -135,6 +136,11 @@ function CheckinPageContent() {
       return;
     }
     toast.success("Presença registrada com sucesso!");
+    // Confetti colorido
+    const colors = ["#0d9488", "#0f766e", "#e11d48", "#f59e0b", "#8b5cf6", "#06b6d4", "#22c55e", "#ec4899"];
+    confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 }, colors });
+    confetti({ particleCount: 50, spread: 100, origin: { x: 0.2, y: 0.7 }, colors });
+    confetti({ particleCount: 50, spread: 100, origin: { x: 0.8, y: 0.7 }, colors });
     setSelectedMemberId("");
     setMemberInput("");
     setMeditationDone(false);
