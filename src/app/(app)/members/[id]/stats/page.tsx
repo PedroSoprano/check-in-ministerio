@@ -34,7 +34,7 @@ export default async function MemberStatsPage({
       .limit(100),
   ]);
 
-  const list = (checkIns ?? []) as Array<{
+  const list = (checkIns ?? []) as unknown as Array<{
     id: string;
     meditation_done: boolean;
     verses_memorized: number;

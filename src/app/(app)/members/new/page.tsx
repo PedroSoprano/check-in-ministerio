@@ -10,6 +10,7 @@ export default function NewMemberPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [matriculaSenib, setMatriculaSenib] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [sex, setSex] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -23,6 +24,7 @@ export default function NewMemberPage() {
       name: name.trim(),
       email: email.trim() || null,
       matricula_senib: matriculaSenib.trim() || null,
+      birth_date: birthDate.trim() || null,
       sex: sex || null,
       active: true,
     });
@@ -78,6 +80,18 @@ export default function NewMemberPage() {
           />
         </div>
         <div>
+          <label htmlFor="birthDate" className="block text-sm font-medium mb-1">
+            Data de aniversário
+          </label>
+          <input
+            id="birthDate"
+            type="date"
+            value={birthDate}
+            onChange={(e) => setBirthDate(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded"
+          />
+        </div>
+        <div>
           <label htmlFor="sex" className="block text-sm font-medium mb-1">
             Sexo
           </label>
@@ -90,7 +104,6 @@ export default function NewMemberPage() {
             <option value="">—</option>
             <option value="M">Masculino</option>
             <option value="F">Feminino</option>
-            <option value="outro">Outro</option>
           </select>
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}

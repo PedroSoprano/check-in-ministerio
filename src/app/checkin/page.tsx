@@ -90,6 +90,17 @@ export default function CheckinPage() {
 
   const eventIdToSend = selectedEventId || null;
 
+  function getLocation(): Promise<{ latitude: number; longitude: number } | null> {
+    if (typeof navigator === "undefined" || !navigator.geolocation) return Promise.resolve(null);
+    return new Promise((resolve) => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => resolve({ latitude: pos.coords.latitude, longitude: pos.coords.longitude }),
+        () => resolve(null),
+        { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 }
+      );
+    });
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedMemberId) return;
@@ -100,13 +111,19 @@ export default function CheckinPage() {
     if (alreadyCheckedIn) return;
     setMessage(null);
     setSubmitting(true);
+    const location = await getLocation();
     const supabase = createClient();
-    const { error } = await supabase.from("check_ins").insert({
+    const payload: Record<string, unknown> = {
       member_id: selectedMemberId,
       event_id: eventIdToSend,
       meditation_done: meditationDone,
       verses_memorized: Math.max(0, versesMemorized),
-    });
+    };
+    if (location) {
+      payload.latitude = location.latitude;
+      payload.longitude = location.longitude;
+    }
+    const { error } = await supabase.from("check_ins").insert(payload);
     setSubmitting(false);
     if (error) {
       const isDuplicate = error.code === "23505";
@@ -170,10 +187,12 @@ export default function CheckinPage() {
   }
 
   return (
-    <main className="min-h-screen px-5 pt-5 pb-6 sm:p-6 max-w-lg mx-auto bg-white text-gray-800 safe-area-padding">
+    <main className="min-h-screen px-5 pt-5 pb-6 sm:p-6 max-w-lg mx-auto bg-gradient-to-b from-[var(--brand-muted)] to-white text-gray-800 safe-area-padding">
       <div className="mb-4 sm:mb-6 flex items-center justify-between gap-2">
-        <h1 className="text-lg sm:text-xl font-bold text-gray-900">Check-in</h1>
-        <Link href="/" className="min-h-[44px] flex items-center text-sm text-blue-600 hover:underline active:text-blue-800 py-2">
+        <div className="flex items-center min-w-0">
+          <span className="text-lg font-semibold text-gray-800 truncate">Check-in</span>
+        </div>
+        <Link href="/" className="min-h-[44px] flex items-center text-sm font-medium text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] active:underline py-2 shrink-0">
           Início
         </Link>
       </div>
@@ -195,7 +214,7 @@ export default function CheckinPage() {
                   key={ev.id}
                   className={`flex items-center gap-3 min-h-[48px] p-4 rounded-lg border cursor-pointer touch-manipulation ${
                     selectedEventId === ev.id
-                      ? "border-blue-500 bg-blue-50"
+                      ? "border-[var(--brand-primary)] bg-[var(--brand-muted)]"
                       : "border-gray-200 bg-white hover:bg-gray-50 active:bg-gray-100"
                   }`}
                 >
@@ -205,7 +224,7 @@ export default function CheckinPage() {
                     value={ev.id}
                     checked={selectedEventId === ev.id}
                     onChange={() => setSelectedEventId(ev.id)}
-                    className="w-5 h-5 shrink-0 text-blue-600"
+                    className="w-5 h-5 shrink-0 accent-[var(--brand-primary)]"
                   />
                   <div className="min-w-0">
                     <span className="font-medium text-gray-900 block sm:inline">{ev.title}</span>
@@ -251,7 +270,7 @@ export default function CheckinPage() {
             onKeyDown={onMemberInputKeyDown}
             placeholder="Digite o nome para buscar..."
             autoComplete="off"
-            className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 text-base"
+            className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-[var(--brand-primary)] bg-white text-gray-900 text-base"
           />
           {memberDropdownOpen && (
             <ul
@@ -269,7 +288,7 @@ export default function CheckinPage() {
                     aria-selected={selectedMemberId === m.id}
                     className={`min-h-[44px] flex items-center px-4 py-3 text-base cursor-pointer touch-manipulation ${
                       i === highlightedIndex
-                        ? "bg-blue-100 text-blue-900"
+                        ? "bg-[var(--brand-muted)] text-[var(--brand-primary-active)]"
                         : "text-gray-800 hover:bg-gray-100"
                     }`}
                     onMouseDown={(e) => {
@@ -292,7 +311,7 @@ export default function CheckinPage() {
             type="checkbox"
             checked={meditationDone}
             onChange={(e) => setMeditationDone(e.target.checked)}
-            className="w-5 h-5 rounded border-gray-300 text-blue-600 shrink-0"
+            className="w-5 h-5 rounded border-gray-300 accent-[var(--brand-primary)] shrink-0"
           />
           <label htmlFor="meditation" className="text-base font-medium text-gray-800 cursor-pointer touch-manipulation">
             Meditei na semana
@@ -311,7 +330,7 @@ export default function CheckinPage() {
             onChange={(e) => setVersesMemorized(parseInt(e.target.value, 10) || 0)}
             placeholder="0"
             inputMode="numeric"
-            className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white text-gray-900 text-base"
+            className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] bg-white text-gray-900 text-base"
           />
         </div>
 
@@ -336,7 +355,7 @@ export default function CheckinPage() {
         <button
           type="submit"
           disabled={submitting || alreadyCheckedIn}
-          className="w-full min-h-[48px] py-3 px-4 bg-blue-600 text-white rounded-lg text-base font-medium hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+          className="w-full min-h-[48px] py-3 px-4 bg-[var(--brand-primary)] text-white rounded-xl text-base font-medium hover:bg-[var(--brand-primary-hover)] active:bg-[var(--brand-primary-active)] disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation shadow-sm"
         >
           {submitting ? "Registrando…" : alreadyCheckedIn ? "Já fez check-in" : "Confirmar presença"}
         </button>

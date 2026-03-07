@@ -11,11 +11,14 @@
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.10",
+    "apexcharts": "^4.0.0",
+    "jspdf": "^4.2.0",
+    "jspdf-autotable": "^5.0.7",
     "next": "15.0.3",
     "react": "^18.3.1",
+    "react-apexcharts": "^1.4.1",
     "react-dom": "^18.3.1",
-    "apexcharts": "^4.0.0",
-    "react-apexcharts": "^1.4.1"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",

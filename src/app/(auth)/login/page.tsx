@@ -1,5 +1,6 @@
 "use client";
 
+import { Logo } from "@/components/Logo";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -57,9 +58,12 @@ function LoginForm() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-5 pt-5 pb-6 safe-area-padding">
+    <main className="min-h-screen flex flex-col items-center justify-center px-5 pt-5 pb-6 safe-area-padding bg-gradient-to-b from-[var(--brand-muted)] to-white">
       <div className="w-full max-w-sm space-y-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-center">Entrar</h1>
+        <div className="flex flex-col items-center gap-4">
+          <Logo width={160} height={56} />
+          <h1 className="text-xl sm:text-2xl font-bold text-center text-gray-800">Entrar</h1>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-1">
@@ -73,7 +77,7 @@ function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-base"
+              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] text-base"
               placeholder="seu@email.com"
             />
           </div>
@@ -88,7 +92,7 @@ function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-base"
+              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] text-base"
             />
           </div>
           {error && (
@@ -97,14 +101,14 @@ function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full min-h-[48px] py-3 px-4 bg-blue-600 text-white rounded-lg text-base font-medium hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 touch-manipulation"
+            className="w-full min-h-[48px] py-3 px-4 bg-[var(--brand-primary)] text-white rounded-xl text-base font-medium hover:bg-[var(--brand-primary-hover)] active:bg-[var(--brand-primary-active)] disabled:opacity-50 touch-manipulation shadow-sm"
           >
             {loading ? "Entrando…" : "Entrar"}
           </button>
         </form>
         <p className="text-center text-sm text-gray-600">
           Não tem conta?{" "}
-          <Link href="/signup" className="text-blue-600 hover:underline min-h-[44px] inline-flex items-center">
+          <Link href="/signup" className="text-[var(--brand-primary)] font-medium hover:underline min-h-[44px] inline-flex items-center">
             Cadastre-se
           </Link>
         </p>

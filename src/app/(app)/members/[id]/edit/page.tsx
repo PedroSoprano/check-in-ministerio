@@ -12,6 +12,7 @@ export default function EditMemberPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [matriculaSenib, setMatriculaSenib] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [sex, setSex] = useState("");
   const [active, setActive] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -23,7 +24,7 @@ export default function EditMemberPage() {
       const supabase = createClient();
       const { data, error: err } = await supabase
         .from("members")
-        .select("name, email, matricula_senib, sex, active")
+        .select("name, email, matricula_senib, birth_date, sex, active")
         .eq("id", id)
         .single();
       if (err || !data) {
@@ -34,6 +35,7 @@ export default function EditMemberPage() {
       setName(data.name ?? "");
       setEmail(data.email ?? "");
       setMatriculaSenib(data.matricula_senib ?? "");
+      setBirthDate(data.birth_date ? String(data.birth_date).slice(0, 10) : "");
       setSex(data.sex ?? "");
       setActive(data.active ?? true);
       setLoading(false);
@@ -52,6 +54,7 @@ export default function EditMemberPage() {
         name: name.trim(),
         email: email.trim() || null,
         matricula_senib: matriculaSenib.trim() || null,
+        birth_date: birthDate.trim() || null,
         sex: sex || null,
         active,
       })
@@ -120,6 +123,18 @@ export default function EditMemberPage() {
           />
         </div>
         <div>
+          <label htmlFor="birthDate" className="block text-sm font-medium mb-1">
+            Data de aniversário
+          </label>
+          <input
+            id="birthDate"
+            type="date"
+            value={birthDate}
+            onChange={(e) => setBirthDate(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded"
+          />
+        </div>
+        <div>
           <label htmlFor="sex" className="block text-sm font-medium mb-1">
             Sexo
           </label>
@@ -132,7 +147,6 @@ export default function EditMemberPage() {
             <option value="">—</option>
             <option value="M">Masculino</option>
             <option value="F">Feminino</option>
-            <option value="outro">Outro</option>
           </select>
         </div>
         <div className="flex items-center gap-2">

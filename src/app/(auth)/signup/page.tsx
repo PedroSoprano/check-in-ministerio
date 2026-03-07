@@ -1,5 +1,6 @@
 "use client";
 
+import { Logo } from "@/components/Logo";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -38,9 +39,12 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-5 pt-5 pb-6 safe-area-padding">
+    <main className="min-h-screen flex flex-col items-center justify-center px-5 pt-5 pb-6 safe-area-padding bg-gradient-to-b from-[var(--brand-muted)] to-white">
       <div className="w-full max-w-sm space-y-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-center">Cadastre-se</h1>
+        <div className="flex flex-col items-center gap-4">
+          <Logo width={160} height={56} />
+          <h1 className="text-xl sm:text-2xl font-bold text-center text-gray-800">Cadastre-se</h1>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="fullName" className="block text-sm font-medium mb-1">
@@ -52,7 +56,7 @@ export default function SignupPage() {
               autoComplete="name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-base"
+              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] text-base"
               placeholder="Seu nome"
             />
           </div>
@@ -68,7 +72,7 @@ export default function SignupPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-base"
+              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] text-base"
               placeholder="seu@email.com"
             />
           </div>
@@ -84,7 +88,7 @@ export default function SignupPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-base"
+              className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] text-base"
               placeholder="Mínimo 6 caracteres"
             />
           </div>
@@ -94,14 +98,14 @@ export default function SignupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full min-h-[48px] py-3 px-4 bg-blue-600 text-white rounded-lg text-base font-medium hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 touch-manipulation"
+            className="w-full min-h-[48px] py-3 px-4 bg-[var(--brand-primary)] text-white rounded-xl text-base font-medium hover:bg-[var(--brand-primary-hover)] active:bg-[var(--brand-primary-active)] disabled:opacity-50 touch-manipulation shadow-sm"
           >
             {loading ? "Cadastrando…" : "Cadastrar"}
           </button>
         </form>
         <p className="text-center text-sm text-gray-600">
           Já tem conta?{" "}
-          <Link href="/login" className="text-blue-600 hover:underline min-h-[44px] inline-flex items-center">
+          <Link href="/login" className="text-[var(--brand-primary)] font-medium hover:underline min-h-[44px] inline-flex items-center">
             Entrar
           </Link>
         </p>

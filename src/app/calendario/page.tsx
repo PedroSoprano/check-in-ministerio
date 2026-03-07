@@ -136,10 +136,10 @@ export default function CalendarioPage() {
   }
 
   return (
-    <main className="min-h-screen px-5 pt-5 pb-6 sm:p-6 max-w-4xl mx-auto safe-area-padding">
+    <main className="min-h-screen px-5 pt-5 pb-6 sm:p-6 max-w-4xl mx-auto bg-gradient-to-b from-[var(--brand-muted)] to-white safe-area-padding">
       <div className="mb-4 sm:mb-6 flex items-center justify-between gap-2">
-        <h1 className="text-lg sm:text-xl font-bold">Programação</h1>
-        <Link href="/" className="min-h-[44px] flex items-center text-sm text-blue-600 hover:underline active:text-blue-800 py-2">
+        <h1 className="text-lg sm:text-xl font-semibold text-gray-800">Programação</h1>
+        <Link href="/" className="min-h-[44px] flex items-center text-sm font-medium text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] active:underline py-2 shrink-0">
           Início
         </Link>
       </div>
@@ -148,28 +148,28 @@ export default function CalendarioPage() {
         <button
           type="button"
           onClick={prevMonth}
-          className="min-h-[44px] px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-100 active:bg-gray-200 touch-manipulation text-sm font-medium"
+          className="min-h-[44px] px-4 py-2.5 rounded-xl border-2 border-gray-200 bg-white hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] active:bg-gray-50 touch-manipulation text-sm font-medium transition-colors"
         >
           ← Anterior
         </button>
-        <h2 className="text-base sm:text-lg font-semibold truncate text-center">
+        <h2 className="text-base sm:text-lg font-semibold truncate text-center text-gray-800">
           {MONTHS[month - 1]} {year}
         </h2>
         <button
           type="button"
           onClick={nextMonth}
-          className="min-h-[44px] px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-100 active:bg-gray-200 touch-manipulation text-sm font-medium"
+          className="min-h-[44px] px-4 py-2.5 rounded-xl border-2 border-gray-200 bg-white hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] active:bg-gray-50 touch-manipulation text-sm font-medium transition-colors"
         >
           Próximo →
         </button>
       </div>
 
-      <div className="flex gap-1 mb-4 p-1 bg-gray-100 rounded-lg w-full sm:w-fit">
+      <div className="flex gap-1 mb-4 p-1 bg-white/80 rounded-xl border border-gray-200 w-full sm:w-fit">
         <button
           type="button"
           onClick={() => setViewMode("calendario")}
-          className={`flex-1 sm:flex-none min-h-[44px] px-4 py-2.5 rounded-md text-sm font-medium transition-colors touch-manipulation ${
-            viewMode === "calendario" ? "bg-white text-blue-700 shadow" : "text-gray-600 hover:text-gray-900 active:text-gray-700"
+          className={`flex-1 sm:flex-none min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium transition-colors touch-manipulation ${
+            viewMode === "calendario" ? "bg-[var(--brand-primary)] text-white shadow-sm" : "text-gray-600 hover:text-gray-900 active:text-gray-700"
           }`}
         >
           Calendário
@@ -177,8 +177,8 @@ export default function CalendarioPage() {
         <button
           type="button"
           onClick={() => setViewMode("lista")}
-          className={`flex-1 sm:flex-none min-h-[44px] px-4 py-2.5 rounded-md text-sm font-medium transition-colors touch-manipulation ${
-            viewMode === "lista" ? "bg-white text-blue-700 shadow" : "text-gray-600 hover:text-gray-900 active:text-gray-700"
+          className={`flex-1 sm:flex-none min-h-[44px] px-4 py-2.5 rounded-lg text-sm font-medium transition-colors touch-manipulation ${
+            viewMode === "lista" ? "bg-[var(--brand-primary)] text-white shadow-sm" : "text-gray-600 hover:text-gray-900 active:text-gray-700"
           }`}
         >
           Lista
@@ -203,7 +203,7 @@ export default function CalendarioPage() {
               return (
                 <li
                   key={ev.id}
-                  className="flex items-center justify-between min-h-[52px] p-4 sm:p-3 bg-white border-b border-gray-100 last:border-b-0 hover:bg-blue-50 active:bg-blue-100 cursor-pointer touch-manipulation"
+                  className="flex items-center justify-between min-h-[52px] p-4 sm:p-3 bg-white border-b border-gray-100 last:border-b-0 hover:bg-[var(--brand-muted)] active:bg-teal-50 cursor-pointer touch-manipulation"
                   onClick={() => openDayModal(dateStr)}
                   onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && openDayModal(dateStr)}
                   role="button"
@@ -220,7 +220,7 @@ export default function CalendarioPage() {
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs text-blue-600">Ver detalhes</span>
+                  <span className="text-xs font-medium text-[var(--brand-primary)]">Ver detalhes</span>
                 </li>
               );
             })
@@ -248,9 +248,9 @@ export default function CalendarioPage() {
                   key={i}
                   className={`min-h-[64px] sm:min-h-[80px] p-1.5 sm:p-2 border-b border-r border-gray-200 last:border-r-0 touch-manipulation ${
                     hasEvents
-                      ? "bg-blue-50 hover:bg-blue-100"
+                      ? "bg-[var(--brand-muted)] hover:bg-teal-100"
                       : "bg-white"
-                  } ${isToday ? "ring-2 ring-inset ring-blue-500" : ""} ${dateStr ? "cursor-pointer" : ""}`}
+                  } ${isToday ? "ring-2 ring-inset ring-[var(--brand-primary)]" : ""} ${dateStr ? "cursor-pointer" : ""}`}
                   role={dateStr ? "button" : undefined}
                   onClick={() => dateStr && openDayModal(dateStr)}
                   onKeyDown={(e) =>
@@ -264,26 +264,28 @@ export default function CalendarioPage() {
                     <>
                       <span
                         className={`text-sm font-medium ${
-                          isToday ? "flex h-7 w-7 items-center justify-center rounded-full bg-blue-500 text-white" : ""
-                        } ${hasEvents && !isToday ? "text-blue-900" : !isToday ? "text-gray-700" : ""}`}
+                          isToday ? "flex h-7 w-7 items-center justify-center rounded-full bg-[var(--brand-primary)] text-white" : ""
+                        } ${hasEvents && !isToday ? "text-[var(--brand-primary-active)]" : !isToday ? "text-gray-700" : ""}`}
                       >
                         {day}
                       </span>
-                      <div className="mt-1 space-y-1">
-                        {dayEvents.map((ev) => (
-                          <div
-                            key={ev.id}
-                            className="text-xs p-1 rounded bg-blue-100 text-blue-800"
-                            title={`${ev.title} ${ev.event_time ? formatTime(ev.event_time) : ""} (${ev.type})`}
-                          >
-                            {ev.title}
-                            {ev.event_time && (
-                              <span className="block text-blue-600">
-                                {formatTime(ev.event_time)}
-                              </span>
-                            )}
-                          </div>
-                        ))}
+                      <div className="mt-1 space-y-0.5 overflow-hidden">
+                        {dayEvents.map((ev) => {
+                          const timeStr = ev.event_time
+                            ? ev.event_time_end
+                              ? `${formatTime(ev.event_time)}–${formatTime(ev.event_time_end)}`
+                              : formatTime(ev.event_time)
+                            : ev.type === "ensaio" ? "Ensaio" : "Evento";
+                          return (
+                            <div
+                              key={ev.id}
+                              className="text-[10px] sm:text-xs truncate px-1 py-0.5 rounded bg-teal-100 text-[var(--brand-primary-active)]"
+                              title={`${ev.title} — ${timeStr}`}
+                            >
+                              {timeStr}
+                            </div>
+                          );
+                        })}
                       </div>
                     </>
                   )}
@@ -346,7 +348,7 @@ export default function CalendarioPage() {
                     <div className="mt-3 flex flex-col sm:flex-row flex-wrap gap-2">
                       <Link
                         href={`/checkin?date=${modalDate}&event_id=${encodeURIComponent(ev.id)}`}
-                        className="min-h-[44px] inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700 active:bg-blue-800 touch-manipulation"
+                        className="min-h-[44px] inline-flex items-center justify-center rounded-lg bg-[var(--brand-primary)] px-4 py-3 text-sm font-medium text-white hover:bg-[var(--brand-primary-hover)] active:bg-[var(--brand-primary-active)] touch-manipulation"
                       >
                         Fazer check-in neste evento
                       </Link>

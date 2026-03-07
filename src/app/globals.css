@@ -2,10 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tema claro fixo */
+/* Identidade Nova Igreja Batista Tabernáculo (teal + tons quentes) */
 :root {
   --foreground: #1f2937;
   --background: #ffffff;
+  --brand-primary: #0d9488;
+  --brand-primary-hover: #0f766e;
+  --brand-primary-active: #115e59;
+  --brand-accent: #ca8a04;
+  --brand-muted: #f0fdfa;
 }
 
 body {
@@ -38,5 +43,29 @@ select option {
   input[type="number"],
   input[type="search"] {
     font-size: 16px;
+  }
+}
+
+/* Impressão / Exportar PDF: esconder navegação e controles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  body .print-area,
+  body .print-area * {
+    visibility: visible;
+  }
+  body .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+  }
+  .no-print,
+  header,
+  nav,
+  .safe-area-padding {
+    display: none !important;
   }
 }
