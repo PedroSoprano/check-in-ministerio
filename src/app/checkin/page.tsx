@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { Loading } from "@/components/Loading";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 type Member = { id: string; name: string };
 type EventItem = {
@@ -17,7 +17,7 @@ type EventItem = {
   type: string;
 };
 
-export default function CheckinPage() {
+function CheckinPageContent() {
   const [members, setMembers] = useState<Member[]>([]);
   const [eventsToday, setEventsToday] = useState<EventItem[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState("");
@@ -344,5 +344,13 @@ export default function CheckinPage() {
         </button>
       </form>
     </main>
+  );
+}
+
+export default function CheckinPage() {
+  return (
+    <Suspense fallback={<Loading fullPage />}>
+      <CheckinPageContent />
+    </Suspense>
   );
 }

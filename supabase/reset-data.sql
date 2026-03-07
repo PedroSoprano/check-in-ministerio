@@ -6,11 +6,10 @@
 -- NÃO apaga usuários de autenticação (auth.users).
 -- ============================================
 
--- Ordem: tabelas que referenciam outras primeiro
-truncate table public.check_ins;
-truncate table public.members;
-truncate table public.events;
-truncate table public.profiles;
+-- CASCADE permite truncar em qualquer ordem (resolve FKs entre as tabelas)
+truncate table public.check_ins, public.members, public.events, public.profiles
+  restart identity
+  cascade;
 
 -- Opcional: se quiser limpar também usuários de autenticação (cuidado!):
 -- delete from auth.users;
