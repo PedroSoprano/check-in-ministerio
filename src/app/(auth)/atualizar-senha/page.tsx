@@ -1,6 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/Logo";
+import { PasswordInput } from "@/components/PasswordInput";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -120,9 +121,8 @@ export default function AtualizarSenhaPage() {
             <label htmlFor="password" className="block text-sm font-medium mb-1">
               Nova senha
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] text-base"
@@ -136,9 +136,8 @@ export default function AtualizarSenhaPage() {
             <label htmlFor="confirm" className="block text-sm font-medium mb-1">
               Confirmar senha
             </label>
-            <input
+            <PasswordInput
               id="confirm"
-              type="password"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--brand-primary)] text-base"

@@ -1,6 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/Logo";
+import { PasswordInput } from "@/components/PasswordInput";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -81,9 +82,8 @@ export default function SignupPage() {
             <label htmlFor="password" className="block text-sm font-medium mb-1">
               Senha
             </label>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

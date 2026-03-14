@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { IconUser } from "@/components/Icons";
 import { Loading } from "@/components/Loading";
+import { PasswordInput } from "@/components/PasswordInput";
 
 const inputClass =
   "w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-[var(--brand-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--brand-primary)]";
@@ -251,9 +252,8 @@ export default function PerfilPage() {
             <label htmlFor="new_password" className={labelClass}>
               Nova senha
             </label>
-            <input
+            <PasswordInput
               id="new_password"
-              type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className={inputClass}
@@ -266,9 +266,8 @@ export default function PerfilPage() {
             <label htmlFor="confirm_password" className={labelClass}>
               Confirmar nova senha
             </label>
-            <input
+            <PasswordInput
               id="confirm_password"
-              type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className={inputClass}

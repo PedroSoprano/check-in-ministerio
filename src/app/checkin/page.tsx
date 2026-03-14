@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { toast } from "react-toastify";
 import { Loading } from "@/components/Loading";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
 type Member = { id: string; name: string };
@@ -17,8 +17,8 @@ type EventItem = {
   event_time_end?: string | null;
   type: string;
 };
-
 function CheckinPageContent() {
+  const router = useRouter();
   const [members, setMembers] = useState<Member[]>([]);
   const [eventsToday, setEventsToday] = useState<EventItem[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState("");
@@ -68,11 +68,43 @@ function CheckinPageContent() {
     load();
   }, [checkinDate]);
 
+  // Seleção automática do evento: 1 evento → seleciona; vários → pelo horário atual
   useEffect(() => {
     if (eventsToday.length === 0) return;
     if (eventIdFromUrl && eventsToday.some((e) => e.id === eventIdFromUrl)) {
       setSelectedEventId(eventIdFromUrl);
+      return;
     }
+    if (eventsToday.length === 1) {
+      setSelectedEventId(eventsToday[0].id);
+      return;
+    }
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    function timeToMinutes(t: string | null | undefined): number | null {
+      if (!t) return null;
+      const s = String(t).trim().slice(0, 5);
+      const [h, m] = s.split(":").map(Number);
+      if (Number.isNaN(h)) return null;
+      return (h ?? 0) * 60 + (Number.isNaN(m) ? 0 : m);
+    }
+    const withMinutes = eventsToday.map((e) => {
+      const start = timeToMinutes(e.event_time) ?? 0;
+      const endMin = timeToMinutes(e.event_time_end);
+      const end = endMin != null ? endMin : start + 180; // sem horário de fim: +3h
+      return { ...e, start, end: end >= start ? end : start + 180 };
+    });
+    const current = withMinutes.find((e) => currentMinutes >= e.start && currentMinutes <= (e.end || 24 * 60));
+    if (current) {
+      setSelectedEventId(current.id);
+      return;
+    }
+    const next = withMinutes.find((e) => e.start > currentMinutes);
+    if (next) {
+      setSelectedEventId(next.id);
+      return;
+    }
+    setSelectedEventId(eventsToday[eventsToday.length - 1].id);
   }, [eventsToday, eventIdFromUrl]);
 
   useEffect(() => {
@@ -136,17 +168,12 @@ function CheckinPageContent() {
       return;
     }
     toast.success("Presença registrada com sucesso!");
-    // Confetti colorido
     const colors = ["#0d9488", "#0f766e", "#e11d48", "#f59e0b", "#8b5cf6", "#06b6d4", "#22c55e", "#ec4899"];
     confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 }, colors });
     confetti({ particleCount: 50, spread: 100, origin: { x: 0.2, y: 0.7 }, colors });
     confetti({ particleCount: 50, spread: 100, origin: { x: 0.8, y: 0.7 }, colors });
-    setSelectedMemberId("");
-    setMemberInput("");
-    setMeditationDone(false);
-    setVersesMemorized(0);
-    setAlreadyCheckedIn(false);
-    setMemberDropdownOpen(false);
+    const presencaUrl = `/checkin/presenca?date=${checkinDate}${eventIdToSend ? `&event_id=${eventIdToSend}` : ""}`;
+    router.push(presencaUrl);
   }
 
   function selectMember(m: Member) {
@@ -349,6 +376,12 @@ function CheckinPageContent() {
           {submitting ? "Registrando…" : alreadyCheckedIn ? "Já fez check-in" : "Confirmar presença"}
         </button>
       </form>
+
+      <p className="mt-4 text-center text-sm text-gray-500">
+        <Link href={`/checkin/presenca?date=${checkinDate}${selectedEventId ? `&event_id=${selectedEventId}` : ""}`} className="text-[var(--brand-primary)] hover:underline">
+          Ver quem já fez check-in hoje
+        </Link>
+      </p>
     </main>
   );
 }

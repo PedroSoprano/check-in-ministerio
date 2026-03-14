@@ -2,6 +2,7 @@
 
 import { Logo } from "@/components/Logo";
 import { Loading } from "@/components/Loading";
+import { PasswordInput } from "@/components/PasswordInput";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -93,9 +94,8 @@ function LoginForm() {
                 Esqueci minha senha
               </Link>
             </div>
-            <input
+            <PasswordInput
               id="password"
-              type="password"
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
