@@ -42,13 +42,22 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    type Row = { id: string; member_id: string; created_at: string; members: { name: string } | null };
-    const list = (data ?? []).map((row: Row) => ({
-      id: row.id,
-      member_id: row.member_id,
-      member_name: row.members?.name ?? "—",
-      created_at: row.created_at,
-    }));
+    const rows = (data ?? []) as Array<{
+      id: string;
+      member_id: string;
+      created_at: string;
+      members: { name?: string } | { name?: string }[] | null;
+    }>;
+    const list = rows.map((row) => {
+      const m = row.members;
+      const name = Array.isArray(m) ? m[0]?.name : m?.name;
+      return {
+        id: row.id,
+        member_id: row.member_id,
+        member_name: name ?? "—",
+        created_at: row.created_at,
+      };
+    });
 
     return NextResponse.json(list);
   } catch (e) {
