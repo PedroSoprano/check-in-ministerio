@@ -94,8 +94,8 @@ function PresencaPageContent() {
               className="flex items-center justify-between py-3 px-4 bg-white rounded-lg border border-gray-200 shadow-sm"
             >
               <span className="font-medium text-gray-900">{item.member_name}</span>
-              <span className="text-gray-500 text-sm shrink-0 ml-2">
-                {new Date(item.created_at).toLocaleTimeString("pt-BR", {
+              <span className="text-gray-600 text-sm shrink-0 ml-2" title="Horário do check-in">
+                às {new Date(item.created_at).toLocaleTimeString("pt-BR", {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}

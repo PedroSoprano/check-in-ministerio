@@ -27,6 +27,7 @@ type PresentItem = {
   verses_memorized: number;
   latitude?: number | null;
   longitude?: number | null;
+  created_at?: string;
   members: { name: string } | null;
   events: { title: string; event_time: string | null } | null;
 };
@@ -289,6 +290,11 @@ export function PresencaHojeClient({
                       {c.events?.event_time && (
                         <span className="ml-1">
                           · {String(c.events.event_time).slice(0, 5)}
+                        </span>
+                      )}
+                      {c.created_at && (
+                        <span className="ml-1" title="Horário do check-in">
+                          · às {new Date(c.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       )}
                     </span>

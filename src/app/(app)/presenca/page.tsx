@@ -12,6 +12,7 @@ type PresentItem = {
   verses_memorized: number;
   latitude: number | null;
   longitude: number | null;
+  created_at?: string;
   members: { name: string } | null;
   events: { title: string; event_time: string | null } | null;
 };
@@ -67,7 +68,7 @@ export default async function PresencaPage({
       const { data } = await supabase
         .from("check_ins")
         .select(
-          "id, member_id, event_id, meditation_done, verses_memorized, latitude, longitude, members(name), events(title, event_time)"
+          "id, member_id, event_id, meditation_done, verses_memorized, latitude, longitude, created_at, members(name), events(title, event_time)"
         )
         .in("event_id", eventIds);
       checkInsToday = (data ?? []) as unknown as PresentItem[];
@@ -119,7 +120,7 @@ export default async function PresencaPage({
     const { data: checkIns } = await supabase
       .from("check_ins")
       .select(
-        "id, member_id, event_id, meditation_done, verses_memorized, latitude, longitude, members(name), events(title, event_time)"
+        "id, member_id, event_id, meditation_done, verses_memorized, latitude, longitude, created_at, members(name), events(title, event_time)"
       )
       .eq("event_id", eventIdParam);
     const present = (checkIns ?? []) as unknown as PresentItem[];
