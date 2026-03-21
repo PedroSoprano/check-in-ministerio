@@ -108,6 +108,14 @@ export function AppHeader({ isAdmin }: Props) {
                     Membros
                   </Link>
                   <Link
+                    href="/users"
+                    className={linkClass}
+                    onClick={() => setOpen(false)}
+                  >
+                    <IconUser title="Usuários" />
+                    Usuários com conta
+                  </Link>
+                  <Link
                     href="/events"
                     className={linkClass}
                     onClick={() => setOpen(false)}

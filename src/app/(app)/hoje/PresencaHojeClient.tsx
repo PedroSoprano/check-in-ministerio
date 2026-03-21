@@ -8,7 +8,7 @@ import * as XLSX from "xlsx";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "react-toastify";
-import { IconCalendar, IconDownload, IconClose } from "@/components/Icons";
+import { IconCalendar, IconDownload, IconClose, IconDelete } from "@/components/Icons";
 
 import "leaflet/dist/leaflet.css";
 
@@ -48,6 +48,8 @@ type Props = {
   eventIdForNew?: string;
   /** Eventos do dia (para modal criar check-in quando há vários eventos) */
   eventsForDay?: EventForDay[];
+  /** Se true, mostra botão de apagar check-in */
+  canDelete?: boolean;
 };
 
 function matchName(name: string, query: string) {
@@ -66,6 +68,7 @@ export function PresencaHojeClient({
   exportFilenameBase,
   eventIdForNew,
   eventsForDay = [],
+  canDelete = true,
 }: Props) {
   const router = useRouter();
   const title = titleOverride ?? "Presença hoje";
@@ -78,6 +81,7 @@ export function PresencaHojeClient({
   const [editMeditation, setEditMeditation] = useState(false);
   const [editVerses, setEditVerses] = useState(0);
   const [editSaving, setEditSaving] = useState(false);
+  const [deletingCheckin, setDeletingCheckin] = useState(false);
 
   const [selectedAbsent, setSelectedAbsent] = useState<AbsentItem | null>(null);
   const [createEventId, setCreateEventId] = useState("");
@@ -173,6 +177,22 @@ export function PresencaHojeClient({
     setCreateEventId(eventsToPick.length === 1 ? eventsToPick[0].id : eventsToPick[0]?.id ?? "");
     setCreateMeditation(false);
     setCreateVerses(0);
+  }
+
+  async function handleDeleteCheckin() {
+    if (!selectedPresent || !canDelete) return;
+    if (!confirm(`Excluir o check-in de ${selectedPresent.members?.name ?? "este membro"}? Esta ação não pode ser desfeita.`)) return;
+    setDeletingCheckin(true);
+    const supabase = createClient();
+    const { error } = await supabase.from("check_ins").delete().eq("id", selectedPresent.id);
+    setDeletingCheckin(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Check-in excluído.");
+    setSelectedPresent(null);
+    router.refresh();
   }
 
   async function handleCreateCheckin(e: React.FormEvent) {
@@ -535,6 +555,19 @@ export function PresencaHojeClient({
                       Fechar
                     </button>
                   </div>
+                  {canDelete && (
+                    <div className="pt-3 mt-3 border-t border-gray-100">
+                      <button
+                        type="button"
+                        onClick={handleDeleteCheckin}
+                        disabled={deletingCheckin}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-red-600 hover:bg-red-50 text-sm font-medium disabled:opacity-50"
+                      >
+                        <IconDelete title="Excluir" />
+                        {deletingCheckin ? "Excluindo…" : "Excluir check-in"}
+                      </button>
+                    </div>
+                  )}
                 </form>
               </div>
             </div>

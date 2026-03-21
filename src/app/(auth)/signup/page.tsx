@@ -19,8 +19,8 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
     const supabase = createClient();
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      email: email.trim(),
       password,
       options: {
         data: { full_name: fullName },
@@ -29,6 +29,13 @@ export default function SignupPage() {
     });
     if (signUpError) {
       toast.error(signUpError.message);
+      setLoading(false);
+      return;
+    }
+    // Com "Confirmar email" ativado, o Supabase não retorna erro para email já existente,
+    // mas retorna identities vazio quando o email já está cadastrado
+    if (signUpData.user && (!signUpData.user.identities || signUpData.user.identities.length === 0)) {
+      toast.error("Este e-mail já está cadastrado. Faça login ou recupere sua senha.");
       setLoading(false);
       return;
     }
