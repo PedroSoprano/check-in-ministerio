@@ -123,6 +123,14 @@ export function AppHeader({ isAdmin }: Props) {
                     <IconCalendarDays title="Eventos" />
                     Eventos
                   </Link>
+                  <Link
+                    href="/musical-admin"
+                    className={linkClass}
+                    onClick={() => setOpen(false)}
+                  >
+                    <IconClipboardCheck title="Musical" />
+                    Musical Aladin
+                  </Link>
                 </>
               )}
               <Link

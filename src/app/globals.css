@@ -15,7 +15,7 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: var(--brand-muted);
 }
 
 /* Garantir contraste em inputs e cards */

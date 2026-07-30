@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="light" suppressHydrationWarning>
-      <body className="antialiased min-h-screen bg-white text-gray-800">
+      <body className="antialiased min-h-screen bg-[var(--brand-muted)] text-gray-800">
         {children}
         <ToastProvider />
       </body>

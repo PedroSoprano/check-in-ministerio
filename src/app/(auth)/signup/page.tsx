@@ -28,7 +28,18 @@ export default function SignupPage() {
       },
     });
     if (signUpError) {
-      toast.error(signUpError.message);
+      const msg = signUpError.message.toLowerCase();
+      const isRateLimit =
+        msg.includes("rate limit") ||
+        msg.includes("too many requests") ||
+        (signUpError as { status?: number })?.status === 429 ||
+        msg.includes("aguarde") ||
+        msg.includes("wait");
+      toast.error(
+        isRateLimit
+          ? "Muitas tentativas. Aguarde alguns minutos e tente novamente."
+          : signUpError.message
+      );
       setLoading(false);
       return;
     }

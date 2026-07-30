@@ -62,6 +62,18 @@ Lista de pessoas que podem fazer check-in. O campo `user_id` indica se o membro 
 
 ---
 
+## Rate limit de email no cadastro
+
+Se aparecer erro de "rate limit" ou "too many requests" ao cadastrar:
+
+- **Causa:** O Supabase limita envio de emails (ex.: 3/hora no plano free com SMTP padrão).
+- **Soluções:**
+  1. **Desativar confirmação de email** (para apps internos): Dashboard → Authentication → Providers → Email → desmarque "Confirm email". Cadastros passam a funcionar sem enviar email.
+  2. **Aguardar:** O limite é por hora; tente de novo mais tarde.
+  3. **SMTP customizado:** Configure Resend, SendGrid etc. no Supabase para limites maiores (Dashboard → Project Settings → Auth → SMTP).
+
+---
+
 ## Diferença: Members vs Users
 
 | | **Members** | **Users (profiles)** |

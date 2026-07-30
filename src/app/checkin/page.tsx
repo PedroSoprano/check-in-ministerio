@@ -215,7 +215,8 @@ function CheckinPageContent() {
   }
 
   return (
-    <main className="min-h-screen px-5 pt-5 pb-6 sm:p-6 max-w-lg mx-auto bg-gradient-to-b from-[var(--brand-muted)] to-white text-gray-800 safe-area-padding">
+    <main className="min-h-screen w-full bg-gradient-to-b from-[var(--brand-muted)] to-white text-gray-800 safe-area-padding">
+      <div className="mx-auto w-full max-w-lg px-5 pt-5 pb-6 sm:p-6">
       <div className="mb-4 sm:mb-6 flex items-center justify-between gap-2">
         <div className="flex items-center min-w-0">
           <span className="text-lg font-semibold text-gray-800 truncate">Check-in</span>
@@ -382,6 +383,7 @@ function CheckinPageContent() {
           Ver quem já fez check-in hoje
         </Link>
       </p>
+      </div>
     </main>
   );
 }
